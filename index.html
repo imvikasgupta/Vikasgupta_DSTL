@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travel Agency</title>
+    <title>AKGEC Travel</title>
 
     <style>
-        
+
     :root{
       --accent:#ff7a59;
       --muted:#6b7280;
@@ -194,7 +194,7 @@
       95%{transform:translateX(-300%)}
       100%{transform:translateX(0%)}
     }
-   
+
     .filters{
         display:flex;
         gap:10px;
@@ -208,7 +208,14 @@
         background:var(--glass);
         color:#e6eef8;
         border:1px solid rgba(255,255,255,0.03);
-        cursor:pointer
+        cursor:pointer;
+        transition: background-color 0.2s;
+    }
+
+    .chip.active, .chip:hover {
+        background: var(--accent);
+        color: #06111a;
+        border-color: var(--accent);
     }
 
     .grid{
@@ -222,7 +229,14 @@
         padding:18px;
         border-radius:16px;
         box-shadow:0 6px 18px rgba(2,6,23,0.45);
-        transition:transform .25s ease, box-shadow .25s ease}
+        transition:transform .25s ease, box-shadow .25s ease, opacity 0.3s ease;
+        /* Custom property to hold filter category */
+    }
+
+    .card.hidden {
+        display: none;
+        opacity: 0;
+    }
 
     .card:hover{
         transform:translateY(-10px);
@@ -309,8 +323,8 @@
             <h1>Find your next adventure</h1>
             <p>Handpicked tour packages, local guides, and flexible itineraries — built for curious travellers.</p>
             <div class="search">
-              <input placeholder="Search destination or package">
-              <button style="background:linear-gradient(90deg,var(--accent),#ffb07a);">Search</button>
+              <input id="searchInput" placeholder="Search destination or package">
+              <button id="searchButton" style="background:linear-gradient(90deg,var(--accent),#ffb07a);">Search</button>
             </div>
             <p style="margin-top:16px;color:rgb(115, 115, 115);font-size:14px;line-height:1.6">Discover exotic locations, hidden gems, and local experiences curated for all types of travelers. From beach escapes to mountain treks, we have something for everyone.</p>
           </div>
@@ -335,42 +349,51 @@
 
       <section id="destinations">
         <h2>Popular destinations</h2>
-        <p style="color:rgb(115, 115, 115);margin-bottom:16px;">Explore cards for quick details and pricing.</p>
-        <div class="grid">
-          <div class="card">
+        <p style="color:rgb(115, 115, 115);margin-bottom:16px;">Filter destinations by category:</p>
+
+        <div class="filters">
+            <div class="chip active" data-filter="all">All</div>
+            <div class="chip" data-filter="beach">Beach</div>
+            <div class="chip" data-filter="mountain">Mountain</div>
+            <div class="chip" data-filter="city">City</div>
+            <div class="chip" data-filter="safari">Safari</div>
+            <div class="chip" data-filter="india">India</div>
+        </div>
+        <div class="grid" id="destinationGrid">
+          <div class="card" data-category="beach">
             <img src="https://imgs.search.brave.com/HWjqifTWyzCKztyGC6XLAVr_GfNpBryg8M_K3zuO0q4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/dHJhdmVsYW5kbGVp/c3VyZS5jb20vdGht/Yi82ckFYdTJZZEsz/NFA0YlptbWtDNktS/VG05MmM9LzE1MDB4/MC9maWx0ZXJzOm5v/X3Vwc2NhbGUoKTpt/YXhfYnl0ZXMoMTUw/MDAwKTpzdHJpcF9p/Y2MoKS9tb3RoZXIt/c29uLW1hbGRpdmVz/LXZhY2F0aW9uLU1B/TERJVkVNSVNTMDgy/MC1hZWNmODk2MDY1/NTI0M2U4YjBlZjMx/MTA4MmE5MjcyOS5q/cGc" alt="Maldives">
-            <h3>Maldives</h3>
-            <p style="color:rgb(115, 115, 115);font-size:13px">White sand beaches, snorkeling and luxury stays.</p>
+            <h3 class="card-title">Maldives</h3>
+            <p class="card-description" style="color:rgb(115, 115, 115);font-size:13px">White sand beaches, snorkeling and luxury stays.</p>
             <div class="price">₹89,999</div>
           </div>
-          <div class="card">
+          <div class="card" data-category="mountain">
             <img src="https://imgs.search.brave.com/lEHweKzoQJ5iqMQWmGN5f7XoEzN2bQpBBaVNh8Yq9Uo/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy8w/LzAwL0dva3lvX0xh/a2UsX05nb3p1bXBh/X0dsYWNpZXIsX0Fy/YWthbXRzZSxfQ2hv/bGF0c2UsX05lcGFs/LF9IaW1hbGF5YXMu/anBn" alt="Himalayas">
-            <h3>Himalayan Trek</h3>
-            <p style="color:rgb(115, 115, 115);font-size:13px">Trek with local porters & mountain village homestays.</p>
+            <h3 class="card-title">Himalayan Trek</h3>
+            <p class="card-description" style="color:rgb(115, 115, 115);font-size:13px">Trek with local porters & mountain village homestays.</p>
             <div class="price">₹49,999</div>
           </div>
-          <div class="card">
+          <div class="card" data-category="city">
             <img src="https://imgs.search.brave.com/Jwdi_QfHFE-B-doHn1Af44fFJtrY9ApXgoVC4mSxYR8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzA1LzIz/LzFlLzA1MjMxZWZm/MmYyYTg4NjkzNmM4/OTZmYzhmNGYzY2Rm/LmpwZw" alt="Paris">
-            <h3>Paris</h3>
-            <p style="color:rgb(115, 115, 115);font-size:13px">Romantic city tours, museums, and gourmet experiences.</p>
+            <h3 class="card-title">Paris</h3>
+            <p class="card-description" style="color:rgb(115, 115, 115);font-size:13px">Romantic city tours, museums, and gourmet experiences.</p>
             <div class="price">₹1,29,999</div>
           </div>
-          <div class="card">
+          <div class="card" data-category="safari">
             <img src="https://imgs.search.brave.com/4kaVGcOiyosu69YeF6Bz91pGLP7BjOTRbj5bpN4qVAI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pemlw/ZXJ1LmNvbS93cC1j/b250ZW50L3VwbG9h/ZHMvMjAyNC8wNi9h/bWF6b24tc2FmYXJp/LXRvdXItaXF1aXRv/cy5qcGc" alt="Safari">
-            <h3>African Safari</h3>
-            <p style="color:rgb(115, 115, 115);font-size:13px">Wildlife tours and luxury lodge stays in Africa.</p>
+            <h3 class="card-title">African Safari</h3>
+            <p class="card-description" style="color:rgb(115, 115, 115);font-size:13px">Wildlife tours and luxury lodge stays in Africa.</p>
             <div class="price">₹1,59,999</div>
           </div>
-          <div class="card">
+          <div class="card" data-category="city india">
             <img src="https://imgs.search.brave.com/h_26mh3d8eKRQMaT0X46JShDWUStR_SkRNA-n3FeF4k/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aGly/ZGV5ZXRyYXZlbGxl/ci5jb20vd3AtY29u/dGVudC91cGxvYWRz/LzIwMTcvMDkvRnVs/bFNpemVSZW5kZXIt/NTA2LTY4OXg2NzIu/anBn" alt="Udaipur">
-            <h3>Udaipur</h3>
-            <p style="color:rgb(115, 115, 115);font-size:13px">Wildlife tours and luxury lodge stays in Africa.</p>
+            <h3 class="card-title">Udaipur</h3>
+            <p class="card-description" style="color:rgb(115, 115, 115);font-size:13px">The romantic City of Lakes in Rajasthan, India.</p>
             <div class="price">₹29,999</div>
           </div>
-          <div class="card">
+          <div class="card" data-category="city india">
             <img src="https://imgs.search.brave.com/PKwG_4GCU0YHjTLYnTthYjRgJzgRogtZmA5UxVMt40Q/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA2Lzc2LzA3LzM2/LzM2MF9GXzY3NjA3/MzYxMV9VY2o4VXdk/Ung4NWpqY3ZyMjRL/SEtEbVNSUDN4enB1/dC5qcGc" alt="Banaras">
-            <h3>Banaras</h3>
-            <p style="color:rgb(115, 115, 115);font-size:13px">Wildlife tours and luxury lodge stays in Africa.</p>
+            <h3 class="card-title">Varanasi</h3>
+            <p class="card-description" style="color:rgb(115, 115, 115);font-size:13px">Spiritual capital of India on the banks of the Ganges.</p>
             <div class="price">₹19,999</div>
           </div>
         </div>
@@ -379,36 +402,36 @@
       <section id="packages">
         <h2>Top Packages</h2>
         <div class="package-list">
-          <div class="package">
+          <div class="package package-card">
             <img src="https://imgs.search.brave.com/C-CP-kwh_ZXCk5Raa13zaA_yqvjdFuqHac8o9myeatE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvNTIx/MzI5MTM0L3Bob3Rv/L2hpbWFsYXlhcy1t/dC1ldmVyZXN0LXRy/ZWsta2h1bWJ1LXZh/bGxleS1uZXBhbC5q/cGc_cz02MTJ4NjEy/Jnc9MCZrPTIwJmM9/SExWcTZSSlJzeFNr/bHdTSDRnalVLWTZp/SXdmOEVZcUJNejU0/NlhWZk1vWT0" style="width:140px;height:94px;object-fit:cover;border-radius:8px">
             <div class="meta">
-              <strong>Himalayan Trek — 8 days</strong>
+              <strong class="package-title">Himalayan Trek — 8 days</strong>
               <div class="pill">₹49,999</div>
               <p style="color:rgb(115, 115, 115);font-size:13px">A classic trek combining village homestays and high alpine views.</p>
             </div>
           </div>
-          <div class="package">
+          <div class="package package-card">
             <img src="https://imgs.search.brave.com/08aNM__C9uDbv7O1nZzBHRGOEJVeAK-peU5hJQafZ5g/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9lcmZh/cmFpbC5ldS91cGxv/YWRzL2FydGljbGUv/TFRFJTIwNC0xNjI0/OTczOTA2LTE3NDcx/MzEyOTQuanBn" style="width:140px;height:94px;object-fit:cover;border-radius:8px">
             <div class="meta">
-              <strong>European Rail — 12 days</strong>
+              <strong class="package-title">European Rail — 12 days</strong>
               <div class="pill">₹1,39,999</div>
               <p style="color:rgb(115, 115, 115);font-size:13px">City-to-city rail with curated local experiences.</p>
             </div>
           </div>
-          <div class="package">
+          <div class="package package-card">
             <img src="https://imgs.search.brave.com/XuzbV1hSrf8RcGazGj7KE9P7CwVu22auQJ54R_IPukM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/YWR2ZW50dXJlLWxp/ZmUuY29tLzExLzY0/LzE3L0plZXAvMTMw/MHg4MjAud2VicA" style="width:140px;height:94px;object-fit:cover;border-radius:8px">
             <div class="meta">
-              <strong>Safari Adventure — 7 days</strong>
+              <strong class="package-title">Safari Adventure — 7 days</strong>
               <div class="pill">₹1,29,999</div>
               <p style="color:rgb(115, 115, 115);font-size:13px">Luxury African safari with wildlife guides and private lodges.</p>
             </div>
           </div>
-          <div class="package">
-            <img src="https://imgs.search.brave.com/LLECXyMBVmq0HwI6yPYqoeaZRdLMEQy0A0vCU1WyAys/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zN2Fw/MS5zY2VuZTcuY29t/L2lzL2ltYWdlL2lu/Y3JlZGlibGVpbmRp/YS9jYWxhbmd1dGUt/YmVhY2gtZ29hLTUt/bXVzdGhlYWQtaGVy/bz9xbHQ9ODImdHM9/MTc0MjE2ODkzNzE5/NQ" style="width:140px;height:94px;object-fit:cover;border-radius:8px">
+          <div class="package package-card">
+            <img src="https://imgs.search.brave.com/LLECXyMBVmq0HwI6yPYqoeaZRdLMEQy0A0vCU1WyAys/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zN2Fw/MS5zY2VuZTcuY29t/L2lzL2ltYWdlL2lu/Y3JlZGliYmxlaW5k/aWEvY2FsYW5ndXRl/LWJlYWNoLWdvYS01/LW11c3RoZWFkLWhl/cm8_cWx0PTgyJnRz/PTE3NDIxNjg5Mzc0/NTM" style="width:140px;height:94px;object-fit:cover;border-radius:8px">
             <div class="meta">
-              <strong>Goa Beach — 7 days</strong>
+              <strong class="package-title">Goa Beach — 7 days</strong>
               <div class="pill">₹49,999</div>
-              <p style="color:rgb(115, 115, 115);font-size:13px">Luxury African safari with wildlife guides and private lodges.</p>
+              <p style="color:rgb(115, 115, 115);font-size:13px">A week of sun, sand, and coastal fun in Goa.</p>
             </div>
           </div>
         </div>
@@ -417,28 +440,28 @@
       <section id="blogs">
         <h2>Travel Stories & Tips</h2>
         <div class="blogs">
-          <div class="blog-card">
-            <h3>How to pack light for 10 days</h3>
+          <div class="blog-card blog-post">
+            <h3 class="blog-title">How to pack light for 10 days</h3>
             <p style="font-size:13px;color:#334155">Minimalist packing tips, clothing choices and a smart tech checklist.</p>
           </div>
-          <div class="blog-card">
-            <h3>Eating local — a guide to street food</h3>
+          <div class="blog-card blog-post">
+            <h3 class="blog-title">Eating local — a guide to street food</h3>
             <p style="font-size:13px;color:#334155">How to enjoy local food safely and where to look for authentic bites.</p>
           </div>
-          <div class="blog-card">
-            <h3>Top 5 hidden beach destinations</h3>
+          <div class="blog-card blog-post">
+            <h3 class="blog-title">Top 5 hidden beach destinations</h3>
             <p style="font-size:13px;color:#334155">Discover secluded beaches, private coves, and tropical escapes away from crowds.</p>
           </div>
-          <div class="blog-card">
-            <h3>Best travel apps for solo travelers</h3>
+          <div class="blog-card blog-post">
+            <h3 class="blog-title">Best travel apps for solo travelers</h3>
             <p style="font-size:13px;color:#334155">Apps for navigation, local guides, budgeting and safety tips.</p>
           </div>
-            <div class="blog-card">
-            <h3>MANDI’S RECENT TRIP TO CANCUN</h3>
+            <div class="blog-card blog-post">
+            <h3 class="blog-title">MANDI’S RECENT TRIP TO CANCUN</h3>
             <p style="font-size:13px;color:#334155">I was fortunate to travel to Cancun Mexico from Nov 29 – Dec 4, 2020. As an experienced traveler, my trip to Cancun Mexico was seamless! My previous knowledge of…</p>
           </div>
-            <div class="blog-card">
-            <h3>WHY I LOVE THE TRAVEL INDUSTRY</h3>
+            <div class="blog-card blog-post">
+            <h3 class="blog-title">WHY I LOVE THE TRAVEL INDUSTRY</h3>
             <p style="font-size:13px;color:#334155">Why I love the travel industry Hard to believe I have been a travel advisor for 4 decades. I enjoy my job just as much today as in the…</p>
           </div>
         </div>
@@ -446,10 +469,10 @@
 
     </main>
 
-    <footer>Travel Agency 2025</footer>
+    <footer>AKGEC Travel Agency 2025</footer>
   </div>
-    
-    <script>
+
+  <script>
     document.addEventListener('DOMContentLoaded', () => {
       // --- Destination Filtering Logic ---
       const filterChips = document.querySelectorAll('.filters .chip');
