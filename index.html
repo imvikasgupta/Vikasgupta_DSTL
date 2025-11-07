@@ -448,5 +448,77 @@
 
     <footer>Travel Agency 2025</footer>
   </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // --- Destination Filtering Logic ---
+      const filterChips = document.querySelectorAll('.filters .chip');
+      const destinationCards = document.querySelectorAll('#destinationGrid .card');
+
+      filterChips.forEach(chip => {
+        chip.addEventListener('click', function() {
+          // Remove 'active' class from all chips
+          filterChips.forEach(c => c.classList.remove('active'));
+
+          // Add 'active' class to the clicked chip
+          this.classList.add('active');
+
+          const filterValue = this.getAttribute('data-filter');
+
+          destinationCards.forEach(card => {
+            const cardCategory = card.getAttribute('data-category');
+            
+            if (filterValue === 'all' || cardCategory.includes(filterValue)) {
+              // Show the card
+              card.classList.remove('hidden');
+            } else {
+              // Hide the card
+              card.classList.add('hidden');
+            }
+          });
+        });
+      });
+
+      // --- Global Search Logic ---
+      const searchInput = document.getElementById('searchInput');
+      const searchButton = document.getElementById('searchButton');
+      
+      const searchableElements = [
+        ...destinationCards, 
+        ...document.querySelectorAll('.package-card'),
+        ...document.querySelectorAll('.blog-post')
+      ];
+
+      function performSearch() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+
+        searchableElements.forEach(element => {
+          let textContent = '';
+          
+          if (element.classList.contains('card')) { // Destination card
+            textContent = element.querySelector('.card-title').textContent.toLowerCase();
+          } else if (element.classList.contains('package-card')) { // Package card
+            textContent = element.querySelector('.package-title').textContent.toLowerCase();
+          } else if (element.classList.contains('blog-post')) { // Blog card
+            textContent = element.querySelector('.blog-title').textContent.toLowerCase();
+          }
+
+          if (searchTerm === '' || textContent.includes(searchTerm)) {
+            element.style.display = ''; // Show the element (restore default display for grid/flex items)
+          } else {
+            element.style.display = 'none'; // Hide the element
+          }
+        });
+      }
+
+      searchButton.addEventListener('click', performSearch);
+      
+      searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          performSearch();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
